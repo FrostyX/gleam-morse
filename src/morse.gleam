@@ -19,11 +19,12 @@ pub type Char {
 }
 
 pub fn main() {
-  let text =
-    "Hello world"
+  io.println(
+    "The Morse code for 'Hello world!' is "
+    <> "Hello world!"
     |> encode
-    |> to_string
-  io.println("Hello from morse!" <> text)
+    |> to_string,
+  )
 }
 
 pub fn encode(text: String) -> List(Char) {
