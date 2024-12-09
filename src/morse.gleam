@@ -18,11 +18,32 @@ pub type Char {
   Break
 }
 
+pub fn main() {
+  let text =
+    "Hello world"
+    |> encode
+    |> to_string
+  io.println("Hello from morse!" <> text)
+}
+
 pub fn encode(text: String) -> List(Char) {
   encode_sentence(text)
 }
 
-pub fn encode_char(char: String) -> List(Char) {
+pub fn to_string(encoded: List(Char)) -> String {
+  encoded
+  |> list.map(fn(symbol) {
+    case symbol {
+      Dot -> "."
+      Comma -> "-"
+      Space -> " "
+      Break -> " / "
+    }
+  })
+  |> string.join("")
+}
+
+fn encode_char(char: String) -> List(Char) {
   case string.uppercase(char) {
     "0" -> [Comma, Comma, Comma, Comma, Comma]
     "1" -> [Dot, Comma, Comma, Comma, Comma]
@@ -83,7 +104,7 @@ pub fn encode_char(char: String) -> List(Char) {
   }
 }
 
-pub fn encode_word(word: String) -> List(Char) {
+fn encode_word(word: String) -> List(Char) {
   let encoded =
     string.to_graphemes(word)
     |> list.map(encode_char)
@@ -92,7 +113,7 @@ pub fn encode_word(word: String) -> List(Char) {
   list.take(encoded, list.length(encoded) - 1)
 }
 
-pub fn encode_sentence(sentence: String) -> List(Char) {
+fn encode_sentence(sentence: String) -> List(Char) {
   let encoded =
     sentence
     |> string.split(" ")
@@ -100,25 +121,4 @@ pub fn encode_sentence(sentence: String) -> List(Char) {
     |> list.map(fn(x) { list.append(x, [Break]) })
     |> list.flatten
   list.take(encoded, list.length(encoded) - 1)
-}
-
-pub fn to_string(encoded: List(Char)) -> String {
-  encoded
-  |> list.map(fn(symbol) {
-    case symbol {
-      Dot -> "."
-      Comma -> "-"
-      Space -> " "
-      Break -> " / "
-    }
-  })
-  |> string.join("")
-}
-
-pub fn main() {
-  let text =
-    "Hello world"
-    |> encode
-    |> to_string
-  io.println("Hello from morse!" <> text)
 }
