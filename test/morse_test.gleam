@@ -52,3 +52,12 @@ pub fn sentences_test() {
   |> to_string
   |> should.equal(".. / .-.. --- ...- . / -.-- --- ..-")
 }
+
+pub fn special_characters_test() {
+  "Oh my !@$& god!"
+  |> encode
+  |> to_string
+  |> should.equal(
+    "--- .... / -- -.-- / -.-.-- .--.-. ...-..- .-... / --. --- -.. -.-.--",
+  )
+}
