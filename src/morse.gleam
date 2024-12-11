@@ -79,7 +79,7 @@ fn encode_char(char: String) -> List(Char) {
     "7" -> [Comma, Comma, Dot, Dot, Dot]
     "8" -> [Comma, Comma, Comma, Dot, Dot]
     "9" -> [Comma, Comma, Comma, Comma, Dot]
-    "A" -> [Dot, Comma, Comma]
+    "A" -> [Dot, Comma]
     "B" -> [Comma, Dot, Dot, Dot]
     "C" -> [Comma, Dot, Comma, Dot]
     "D" -> [Comma, Dot, Dot]
