@@ -10,11 +10,14 @@ A package for encoding and decoding Morse code in Gleam.
 ## Usage
 
 ```gleam
+import gleam/io
+import morse
+
 let text = "Hello world!"
-case encode(text) {
+case morse.encode(text) {
   Ok(symbols) ->
     io.println("The Morse code for " <> text <> " is " <> to_string(symbols))
-  Error(UnknownCharacter(char)) ->
+  Error(morse.UnknownCharacter(char)) ->
     io.println_error("Invalid character: " <> char)
 }
 ```
