@@ -17,7 +17,7 @@ let text = "Hello world!"
 case morse.encode(text) {
   Ok(symbols) ->
     io.println("The Morse code for " <> text <> " is " <> to_string(symbols))
-  Error(morse.UnknownCharacter(char)) ->
+  Error(morse.InvalidCharacter(char)) ->
     io.println_error("Invalid character: " <> char)
 }
 ```

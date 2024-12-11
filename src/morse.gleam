@@ -16,11 +16,11 @@ pub type Char {
   Comma
   Space
   Break
-  Unknown(String)
+  Invalid(String)
 }
 
 pub type EncodeError {
-  UnknownCharacter(String)
+  InvalidCharacter(String)
 }
 
 pub fn main() {
@@ -28,7 +28,7 @@ pub fn main() {
   case encode(text) {
     Ok(symbols) ->
       io.println("The Morse code for " <> text <> " is " <> to_string(symbols))
-    Error(UnknownCharacter(char)) ->
+    Error(InvalidCharacter(char)) ->
       // TODO Set non-zero exit code
       io.println_error("Invalid character: " <> char)
   }
@@ -37,7 +37,7 @@ pub fn main() {
 pub fn encode(text: String) -> Result(List(Char), EncodeError) {
   let encoded = encode_sentence(text)
   case first_invalid_character(encoded) {
-    Ok(char) -> Error(UnknownCharacter(char))
+    Ok(char) -> Error(InvalidCharacter(char))
     Error(Nil) -> Ok(encoded)
   }
 }
@@ -50,7 +50,7 @@ pub fn to_string(encoded: List(Char)) -> String {
       Comma -> "-"
       Space -> " "
       Break -> " / "
-      Unknown(_) -> ""
+      Invalid(_) -> ""
     }
   })
   |> string.join("")
@@ -60,7 +60,7 @@ fn first_invalid_character(symbols) -> Result(String, Nil) {
   symbols
   |> list.filter_map(fn(x) {
     case x {
-      Unknown(char) -> Ok(char)
+      Invalid(char) -> Ok(char)
       _ -> Error(False)
     }
   })
@@ -123,7 +123,7 @@ fn encode_char(char: String) -> List(Char) {
     "+" -> [Dot, Comma, Dot, Comma, Dot]
     "$" -> [Dot, Dot, Dot, Comma, Dot, Dot, Comma]
     "\"" -> [Dot, Comma, Dot, Dot, Comma, Dot]
-    _ -> [Unknown(char)]
+    _ -> [Invalid(char)]
   }
 }
 
