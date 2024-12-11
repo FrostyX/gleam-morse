@@ -1,7 +1,7 @@
 import gleam/result
 import gleeunit
 import gleeunit/should
-import morse.{Comma, Dot, Space, encode, to_string}
+import morse.{Comma, Dot, InvalidCharacter, Space, encode, to_string}
 
 pub fn main() {
   gleeunit.main()
@@ -80,4 +80,10 @@ pub fn special_characters_test() {
   |> should.equal(
     "--- .... / -- -.-- / -.-.-- .--.-. ...-..- .-... / --. --- -.. -.-.--",
   )
+}
+
+pub fn invalid_characters_test() {
+  let encoded = encode("Oh my !@#$%^& god!")
+  encoded |> should.be_error
+  encoded |> should.equal(Error(InvalidCharacter("#")))
 }
