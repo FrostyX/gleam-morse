@@ -1,3 +1,4 @@
+import gleam/result
 import gleeunit
 import gleeunit/should
 import morse.{Comma, Dot, Space, encode, to_string}
@@ -9,6 +10,7 @@ pub fn main() {
 pub fn encode_test() {
   "SOS"
   |> encode
+  |> result.unwrap([])
   |> should.equal([
     Dot,
     Dot,
@@ -25,30 +27,45 @@ pub fn encode_test() {
 }
 
 pub fn chars_test() {
-  "S" |> encode |> to_string |> should.equal("...")
-  "O" |> encode |> to_string |> should.equal("---")
-  "H" |> encode |> to_string |> should.equal("....")
+  "S" |> encode |> result.unwrap([]) |> to_string |> should.equal("...")
+  "O" |> encode |> result.unwrap([]) |> to_string |> should.equal("---")
+  "H" |> encode |> result.unwrap([]) |> to_string |> should.equal("....")
 }
 
 pub fn words_test() {
-  "SOS" |> encode |> to_string |> should.equal("... --- ...")
-  "HELP" |> encode |> to_string |> should.equal(".... . .-.. .--.")
-  "LOVE" |> encode |> to_string |> should.equal(".-.. --- ...- .")
+  "SOS"
+  |> encode
+  |> result.unwrap([])
+  |> to_string
+  |> should.equal("... --- ...")
+  "HELP"
+  |> encode
+  |> result.unwrap([])
+  |> to_string
+  |> should.equal(".... . .-.. .--.")
+  "LOVE"
+  |> encode
+  |> result.unwrap([])
+  |> to_string
+  |> should.equal(".-.. --- ...- .")
 }
 
 pub fn sentences_test() {
   "Nice to meet you"
   |> encode
+  |> result.unwrap([])
   |> to_string
   |> should.equal("-. .. -.-. . / - --- / -- . . - / -.-- --- ..-")
 
   "Nice to meet you"
   |> encode
+  |> result.unwrap([])
   |> to_string
   |> should.equal("-. .. -.-. . / - --- / -- . . - / -.-- --- ..-")
 
   "I love you"
   |> encode
+  |> result.unwrap([])
   |> to_string
   |> should.equal(".. / .-.. --- ...- . / -.-- --- ..-")
 }
@@ -56,6 +73,7 @@ pub fn sentences_test() {
 pub fn special_characters_test() {
   "Oh my !@$& god!"
   |> encode
+  |> result.unwrap([])
   |> to_string
   |> should.equal(
     "--- .... / -- -.-- / -.-.-- .--.-. ...-..- .-... / --. --- -.. -.-.--",
