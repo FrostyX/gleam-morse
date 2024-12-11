@@ -1,20 +1,23 @@
-# morse
+# Gleam Morse code
 
+A package for encoding and decoding Morse code in Gleam.
+
+<!--
 [![Package Version](https://img.shields.io/hexpm/v/morse)](https://hex.pm/packages/morse)
 [![Hex Docs](https://img.shields.io/badge/hex-docs-ffaff3)](https://hexdocs.pm/morse/)
+-->
 
-```sh
-gleam add morse@1
-```
+## Usage
+
 ```gleam
-import morse
-
-pub fn main() {
-  // TODO: An example of the project in use
+let text = "Hello world!"
+case encode(text) {
+  Ok(symbols) ->
+    io.println("The Morse code for " <> text <> " is " <> to_string(symbols))
+  Error(UnknownCharacter(char)) ->
+    io.println_error("Invalid character: " <> char)
 }
 ```
-
-Further documentation can be found at <https://hexdocs.pm/morse>.
 
 ## Development
 

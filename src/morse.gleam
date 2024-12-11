@@ -24,10 +24,10 @@ pub type EncodeError {
 }
 
 pub fn main() {
-  let encoded = encode("Hello world!")
-  case encoded {
+  let text = "Hello world!"
+  case encode(text) {
     Ok(symbols) ->
-      io.println("The Morse code for 'Hello world!' is " <> to_string(symbols))
+      io.println("The Morse code for " <> text <> " is " <> to_string(symbols))
     Error(UnknownCharacter(char)) ->
       // TODO Set non-zero exit code
       io.println_error("Invalid character: " <> char)
