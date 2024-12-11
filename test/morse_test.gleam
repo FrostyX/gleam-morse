@@ -51,11 +51,13 @@ pub fn words_test() {
 }
 
 pub fn sentences_test() {
-  "Nice to meet you"
+  "What is your name?"
   |> encode
   |> result.unwrap([])
   |> to_string
-  |> should.equal("-. .. -.-. . / - --- / -- . . - / -.-- --- ..-")
+  |> should.equal(
+    ".-- .... .- - / .. ... / -.-- --- ..- .-. / -. .- -- . ..--..",
+  )
 
   "Nice to meet you"
   |> encode
