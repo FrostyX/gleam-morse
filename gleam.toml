@@ -1,12 +1,13 @@
-name = "morse"
+name = "morsey"
 version = "1.0.0"
 
 # Fill out these fields if you intend to generate HTML documentation or publish
 # your project to the Hex package manager.
 #
-# description = ""
-# licences = ["Apache-2.0"]
-# repository = { type = "github", user = "", repo = "" }
+description = "A package for encoding and decoding Morse code in Gleam."
+licences = ["GPL-2.0-or-later"]
+
+repository = { type = "github", user = "FrostyX", repo = "gleam-morse" }
 # links = [{ title = "Website", href = "" }]
 #
 # For a full reference of all the available options, you can have a look at

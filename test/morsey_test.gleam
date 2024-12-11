@@ -1,7 +1,7 @@
 import gleam/result
 import gleeunit
 import gleeunit/should
-import morse.{Comma, Dot, InvalidCharacter, Space, encode, to_string}
+import morsey.{Comma, Dot, InvalidCharacter, Space, encode, to_string}
 
 pub fn main() {
   gleeunit.main()
