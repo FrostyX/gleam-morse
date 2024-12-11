@@ -1,3 +1,4 @@
+import gleam/dict
 import gleam/io
 import gleam/list
 import gleam/string
@@ -56,6 +57,46 @@ pub fn to_string(encoded: List(Char)) -> String {
   |> string.join("")
 }
 
+pub fn from_string(text: String) -> List(Char) {
+  text
+  |> string.to_graphemes
+  |> list.map(fn(x) {
+    case x {
+      "." -> Dot
+      "-" -> Comma
+      " " -> Space
+      "/" -> Break
+      _ -> Invalid(x)
+    }
+  })
+}
+
+pub fn decode(symbols) {
+  let decode_map =
+    map()
+    |> list.map(fn(x) { #(x.1, x.0) })
+    |> dict.from_list
+
+  symbols
+  |> list.chunk(fn(x) { x == Break })
+  |> list.map(fn(chunk) {
+    case chunk {
+      [Break] -> " "
+      _ ->
+        chunk
+        |> list.chunk(fn(x) { x == Space })
+        |> list.map(fn(x) {
+          case dict.get(decode_map, x) {
+            Ok(char) -> char
+            Error(Nil) -> ""
+          }
+        })
+        |> string.join("")
+    }
+  })
+  |> string.join("")
+}
+
 fn first_invalid_character(symbols) -> Result(String, Nil) {
   symbols
   |> list.filter_map(fn(x) {
@@ -68,62 +109,11 @@ fn first_invalid_character(symbols) -> Result(String, Nil) {
 }
 
 fn encode_char(char: String) -> List(Char) {
-  case string.uppercase(char) {
-    "0" -> [Comma, Comma, Comma, Comma, Comma]
-    "1" -> [Dot, Comma, Comma, Comma, Comma]
-    "2" -> [Dot, Dot, Comma, Comma, Comma]
-    "3" -> [Dot, Dot, Dot, Comma, Comma]
-    "4" -> [Dot, Dot, Dot, Dot, Comma]
-    "5" -> [Dot, Dot, Dot, Dot, Dot]
-    "6" -> [Comma, Dot, Dot, Dot, Dot]
-    "7" -> [Comma, Comma, Dot, Dot, Dot]
-    "8" -> [Comma, Comma, Comma, Dot, Dot]
-    "9" -> [Comma, Comma, Comma, Comma, Dot]
-    "A" -> [Dot, Comma]
-    "B" -> [Comma, Dot, Dot, Dot]
-    "C" -> [Comma, Dot, Comma, Dot]
-    "D" -> [Comma, Dot, Dot]
-    "E" -> [Dot]
-    "F" -> [Dot, Dot, Comma, Dot]
-    "G" -> [Comma, Comma, Dot]
-    "H" -> [Dot, Dot, Dot, Dot]
-    "I" -> [Dot, Dot]
-    "J" -> [Dot, Comma, Comma, Comma]
-    "K" -> [Comma, Dot, Comma]
-    "L" -> [Dot, Comma, Dot, Dot]
-    "M" -> [Comma, Comma]
-    "N" -> [Comma, Dot]
-    "O" -> [Comma, Comma, Comma]
-    "P" -> [Dot, Comma, Comma, Dot]
-    "Q" -> [Comma, Comma, Dot, Comma]
-    "R" -> [Dot, Comma, Dot]
-    "S" -> [Dot, Dot, Dot]
-    "T" -> [Comma]
-    "U" -> [Dot, Dot, Comma]
-    "V" -> [Dot, Dot, Dot, Comma]
-    "W" -> [Dot, Comma, Comma]
-    "X" -> [Comma, Dot, Dot, Comma]
-    "Y" -> [Comma, Dot, Comma, Comma]
-    "Z" -> [Comma, Comma, Dot, Dot]
-    "," -> [Comma, Comma, Dot, Dot, Comma, Comma]
-    "." -> [Dot, Comma, Dot, Comma, Dot, Comma]
-    "?" -> [Dot, Dot, Comma, Comma, Dot, Dot]
-    ";" -> [Comma, Dot, Comma, Dot, Comma]
-    ":" -> [Comma, Comma, Comma, Dot, Dot, Dot]
-    "/" -> [Comma, Dot, Dot, Comma, Dot]
-    "-" -> [Comma, Dot, Dot, Dot, Dot, Comma]
-    "'" -> [Dot, Comma, Comma, Comma, Comma, Dot]
-    "(" -> [Comma, Dot, Comma, Comma, Dot]
-    ")" -> [Comma, Dot, Comma, Comma, Dot, Comma]
-    "_" -> [Dot, Dot, Comma, Comma, Dot, Comma]
-    "@" -> [Dot, Comma, Comma, Dot, Comma, Dot]
-    "!" -> [Comma, Dot, Comma, Dot, Comma, Comma]
-    "&" -> [Dot, Comma, Dot, Dot, Dot]
-    "=" -> [Comma, Dot, Dot, Dot, Comma]
-    "+" -> [Dot, Comma, Dot, Comma, Dot]
-    "$" -> [Dot, Dot, Dot, Comma, Dot, Dot, Comma]
-    "\"" -> [Dot, Comma, Dot, Dot, Comma, Dot]
-    _ -> [Invalid(char)]
+  let char = string.uppercase(char)
+  let encode_map = dict.from_list(map())
+  case encode_map |> dict.get(char) {
+    Ok(symbols) -> symbols
+    Error(Nil) -> [Invalid(char)]
   }
 }
 
@@ -144,4 +134,63 @@ fn encode_sentence(sentence: String) -> List(Char) {
     |> list.map(fn(x) { list.append(x, [Break]) })
     |> list.flatten
   list.take(encoded, list.length(encoded) - 1)
+}
+
+fn map() {
+  [
+    #("0", [Comma, Comma, Comma, Comma, Comma]),
+    #("1", [Dot, Comma, Comma, Comma, Comma]),
+    #("2", [Dot, Dot, Comma, Comma, Comma]),
+    #("3", [Dot, Dot, Dot, Comma, Comma]),
+    #("4", [Dot, Dot, Dot, Dot, Comma]),
+    #("5", [Dot, Dot, Dot, Dot, Dot]),
+    #("6", [Comma, Dot, Dot, Dot, Dot]),
+    #("7", [Comma, Comma, Dot, Dot, Dot]),
+    #("8", [Comma, Comma, Comma, Dot, Dot]),
+    #("9", [Comma, Comma, Comma, Comma, Dot]),
+    #("A", [Dot, Comma]),
+    #("B", [Comma, Dot, Dot, Dot]),
+    #("C", [Comma, Dot, Comma, Dot]),
+    #("D", [Comma, Dot, Dot]),
+    #("E", [Dot]),
+    #("F", [Dot, Dot, Comma, Dot]),
+    #("G", [Comma, Comma, Dot]),
+    #("H", [Dot, Dot, Dot, Dot]),
+    #("I", [Dot, Dot]),
+    #("J", [Dot, Comma, Comma, Comma]),
+    #("K", [Comma, Dot, Comma]),
+    #("L", [Dot, Comma, Dot, Dot]),
+    #("M", [Comma, Comma]),
+    #("N", [Comma, Dot]),
+    #("O", [Comma, Comma, Comma]),
+    #("P", [Dot, Comma, Comma, Dot]),
+    #("Q", [Comma, Comma, Dot, Comma]),
+    #("R", [Dot, Comma, Dot]),
+    #("S", [Dot, Dot, Dot]),
+    #("T", [Comma]),
+    #("U", [Dot, Dot, Comma]),
+    #("V", [Dot, Dot, Dot, Comma]),
+    #("W", [Dot, Comma, Comma]),
+    #("X", [Comma, Dot, Dot, Comma]),
+    #("Y", [Comma, Dot, Comma, Comma]),
+    #("Z", [Comma, Comma, Dot, Dot]),
+    #(",", [Comma, Comma, Dot, Dot, Comma, Comma]),
+    #(".", [Dot, Comma, Dot, Comma, Dot, Comma]),
+    #("?", [Dot, Dot, Comma, Comma, Dot, Dot]),
+    #(";", [Comma, Dot, Comma, Dot, Comma]),
+    #(":", [Comma, Comma, Comma, Dot, Dot, Dot]),
+    #("/", [Comma, Dot, Dot, Comma, Dot]),
+    #("-", [Comma, Dot, Dot, Dot, Dot, Comma]),
+    #("'", [Dot, Comma, Comma, Comma, Comma, Dot]),
+    #("(", [Comma, Dot, Comma, Comma, Dot]),
+    #(")", [Comma, Dot, Comma, Comma, Dot, Comma]),
+    #("_", [Dot, Dot, Comma, Comma, Dot, Comma]),
+    #("@", [Dot, Comma, Comma, Dot, Comma, Dot]),
+    #("!", [Comma, Dot, Comma, Dot, Comma, Comma]),
+    #("&", [Dot, Comma, Dot, Dot, Dot]),
+    #("=", [Comma, Dot, Dot, Dot, Comma]),
+    #("+", [Dot, Comma, Dot, Comma, Dot]),
+    #("$", [Dot, Dot, Dot, Comma, Dot, Dot, Comma]),
+    #("\"", [Dot, Comma, Dot, Dot, Comma, Dot]),
+  ]
 }

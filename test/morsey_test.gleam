@@ -1,7 +1,9 @@
 import gleam/result
 import gleeunit
 import gleeunit/should
-import morsey.{Comma, Dot, InvalidCharacter, Space, encode, to_string}
+import morsey.{
+  Comma, Dot, InvalidCharacter, Space, decode, encode, from_string, to_string,
+}
 
 pub fn main() {
   gleeunit.main()
@@ -86,4 +88,15 @@ pub fn invalid_characters_test() {
   let encoded = encode("Oh my !@#$%^& god!")
   encoded |> should.be_error
   encoded |> should.equal(Error(InvalidCharacter("#")))
+}
+
+pub fn decode_test() {
+  [Dot, Dot, Dot, Space, Comma, Comma, Comma, Space, Dot, Dot, Dot]
+  |> decode
+  |> should.equal("SOS")
+
+  ".... . .-.. .-.. --- / .-- --- .-. .-.. -.. -.-.--"
+  |> from_string
+  |> decode
+  |> should.equal("HELLO WORLD!")
 }

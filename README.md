@@ -8,6 +8,8 @@ A package for encoding and decoding Morse code in Gleam.
 
 ## Usage
 
+### Encode
+
 ```gleam
 import gleam/io
 import morsey
@@ -19,6 +21,18 @@ case morsey.encode(text) {
   Error(morsey.InvalidCharacter(char)) ->
     io.println_error("Invalid character: " <> char)
 }
+```
+
+### Decode
+
+```gleam
+import gleam/io
+import morsey
+
+".... . .-.. .-.. --- / .-- --- .-. .-.. -.. -.-.--"
+|> morsey.from_string
+|> morsey.decode
+|> io.println
 ```
 
 ## Development
