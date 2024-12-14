@@ -17,7 +17,7 @@ import morsey
 let text = "Hello world!"
 case morsey.encode(text) {
   Ok(symbols) ->
-    io.println("The Morse code for " <> text <> " is " <> to_string(symbols))
+    io.println("Morse code for " <> text <> " is " <> morsey.to_string(symbols))
   Error(morsey.InvalidCharacter(char)) ->
     io.println_error("Invalid character: " <> char)
 }
